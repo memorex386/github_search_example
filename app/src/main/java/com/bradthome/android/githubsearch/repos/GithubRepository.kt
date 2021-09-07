@@ -1,4 +1,6 @@
 package com.bradthome.android.githubsearch.repos
 
-class GithubRepository {
+import okhttp3.OkHttpClient
+
+class GithubRepository(val okHttpClient: OkHttpClient) {
 }

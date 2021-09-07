@@ -33,7 +33,7 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
         useIR = true
     }
     buildFeatures {
@@ -41,7 +41,7 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
-        kotlinCompilerVersion '1.5.21'
+        kotlinCompilerVersion kotlin_version
     }
     packagingOptions {
         resources {
@@ -69,6 +69,7 @@ dependencies {
     //Ok HTTP
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    testImplementation("com.squareup.okhttp3:mockwebserver:$okhttp_version")
 
     //Glide
     implementation "com.github.bumptech.glide:glide:$glide_version"
