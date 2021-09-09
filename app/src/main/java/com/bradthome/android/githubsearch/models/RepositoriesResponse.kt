@@ -7,7 +7,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-class Repositories : Results<GithubRepo>() {
+class RepositoriesResponse : Results<GithubRepo>() {
     @Json(name = "items")
     override val items: List<GithubRepo>? = null
 }

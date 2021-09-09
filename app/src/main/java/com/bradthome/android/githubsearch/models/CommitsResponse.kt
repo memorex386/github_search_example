@@ -10,7 +10,7 @@ import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-class Commits : Results<CommitItem>() {
+class CommitsResponse : Results<CommitItem>() {
     @Json(name = "items")
     override val items: List<CommitItem>? = null
 }

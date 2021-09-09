@@ -9,7 +9,7 @@ import com.squareup.moshi.JsonClass
  */
 
 @JsonClass(generateAdapter = true)
-class Issues : Results<IssueItem>() {
+class IssuesResponse : Results<IssueItem>() {
 
     @Json(name = "items")
     override val items: List<IssueItem>? = null

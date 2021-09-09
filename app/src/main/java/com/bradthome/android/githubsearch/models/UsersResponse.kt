@@ -45,7 +45,7 @@ class UserItem : ResultsItem() {
 }
 
 @JsonClass(generateAdapter = true)
-class Users : Results<UserItem>() {
+class UsersResponse : Results<UserItem>() {
 
     @Json(name = "items")
     override val items: List<UserItem>? = null

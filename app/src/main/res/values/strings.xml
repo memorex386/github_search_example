@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Github Search</string>
+    <string name="repositories">Repositories</string>
+    <string name="issues">Issues</string>
+    <string name="commits">Commits</string>
+    <string name="users">Users</string>
 </resources>

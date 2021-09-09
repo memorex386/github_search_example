@@ -55,22 +55,22 @@ sealed class SearchApis<T>(
 ) : Parcelable
 
 @Parcelize
-object SearchRepositories : SearchApis<Repositories>("Repos",
+object SearchRepositories : SearchApis<RepositoriesResponse>("Repos",
     GithubApi::repos,
     setOf(SortOptions.STARS, SortOptions.FORKS, SortOptions.UPDATED, SortOptions.BEST_MATCH))
 
 @Parcelize
-object SearchCommits : SearchApis<Commits>("Commits",
+object SearchCommits : SearchApis<CommitsResponse>("Commits",
     GithubApi::commits,
     setOf(SortOptions.AUTHOR_DATE, SortOptions.COMMITTER_DATE, SortOptions.BEST_MATCH))
 
 @Parcelize
-object SearchIssues : SearchApis<Issues>("Issues",
+object SearchIssues : SearchApis<IssuesResponse>("Issues",
     GithubApi::issues,
     setOf(SortOptions.COMMENTS, SortOptions.CREATED, SortOptions.UPDATED, SortOptions.BEST_MATCH))
 
 @Parcelize
-object SearchUsers : SearchApis<Users>("Users",
+object SearchUsers : SearchApis<UsersResponse>("Users",
     GithubApi::users,
     setOf(SortOptions.FOLLOWERS, SortOptions.REPOS, SortOptions.JOINED, SortOptions.BEST_MATCH))
 

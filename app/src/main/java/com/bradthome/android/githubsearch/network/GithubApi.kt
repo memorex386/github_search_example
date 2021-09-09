@@ -1,10 +1,10 @@
 package com.bradthome.android.githubsearch.network
 
 
-import com.bradthome.android.githubsearch.models.Commits
-import com.bradthome.android.githubsearch.models.Issues
-import com.bradthome.android.githubsearch.models.Repositories
-import com.bradthome.android.githubsearch.models.Users
+import com.bradthome.android.githubsearch.models.CommitsResponse
+import com.bradthome.android.githubsearch.models.IssuesResponse
+import com.bradthome.android.githubsearch.models.RepositoriesResponse
+import com.bradthome.android.githubsearch.models.UsersResponse
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Query
@@ -23,7 +23,7 @@ interface GithubApi {
         @Query("page") pageNumber: Int,
         @Query("sort") sort: String?,
         @Query("order") order: String?,
-    ): Repositories
+    ): RepositoriesResponse
 
     @GET("search/issues")
     @Headers(ACCEPT)
@@ -33,7 +33,7 @@ interface GithubApi {
         @Query("sort") sort: String? = null,
         @Query("order") order: String? = null,
     )
-            : Issues
+            : IssuesResponse
 
     @GET("search/users")
     @Headers(ACCEPT)
@@ -43,7 +43,7 @@ interface GithubApi {
         @Query("sort") sort: String? = null,
         @Query("order") order: String? = null,
     )
-            : Users
+            : UsersResponse
 
     @GET("search/commits")
     @Headers(ACCEPT)
@@ -53,6 +53,6 @@ interface GithubApi {
         @Query("sort") sort: String? = null,
         @Query("order") order: String? = null,
     )
-            : Commits
+            : CommitsResponse
 }
 
