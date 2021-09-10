@@ -9,154 +9,156 @@ import com.squareup.moshi.JsonClass
  */
 
 @JsonClass(generateAdapter = true)
-class IssuesResponse : Results<IssueItem>() {
+data class IssuesResponse(
 
     @Json(name = "items")
-    override val items: List<IssueItem>? = null
+    override val items: List<IssueItem>? = null,
 
-}
+    ) : Results<IssueItem>()
 
 @JsonClass(generateAdapter = true)
-class IssueItem : ResultsItem() {
+data class IssueItem(
 
     @Json(name = "url")
-    val url: String? = null
+    val url: String? = null,
 
     @Json(name = "repository_url")
-    val repositoryUrl: String? = null
+    val repositoryUrl: String? = null,
 
     @Json(name = "labels_url")
-    val labelsUrl: String? = null
+    val labelsUrl: String? = null,
 
     @Json(name = "comments_url")
-    val commentsUrl: String? = null
+    val commentsUrl: String? = null,
 
     @Json(name = "events_url")
-    val eventsUrl: String? = null
+    val eventsUrl: String? = null,
 
     @Json(name = "id")
-    val id: Int = 0
+    val id: Int = 0,
 
     @Json(name = "number")
-    val number: Int = 0
+    val number: Int = 0,
 
     @Json(name = "title")
-    val title: String? = null
+    val title: String? = null,
 
     @Json(name = "user")
-    val user: User? = null
+    val user: User? = null,
 
     @Json(name = "labels")
-    val labels: List<Label>? = null
+    val labels: List<Label>? = null,
 
     @Json(name = "state")
-    val state: String? = null
+    val state: String? = null,
 
     @Json(name = "assignee")
-    val assignee: Any? = null
+    val assignee: Any? = null,
 
     @Json(name = "milestone")
-    val milestone: Any? = null
+    val milestone: Any? = null,
 
     @Json(name = "comments")
-    val comments: Int = 0
+    val comments: Int = 0,
 
     @Json(name = "created_at")
-    val createdAt: String? = null
+    val createdAt: String? = null,
 
     @Json(name = "updated_at")
-    val updatedAt: String? = null
+    val updatedAt: String? = null,
 
     @Json(name = "closed_at")
-    val closedAt: Any? = null
+    val closedAt: Any? = null,
 
     @Json(name = "pull_request")
-    val pullRequest: PullRequest? = null
+    val pullRequest: PullRequest? = null,
 
     @Json(name = "body")
-    val body: String? = null
+    val body: String? = null,
 
     @Json(name = "score")
-    val score: Float = 0.toFloat()
+    val score: Float = 0.toFloat(),
 
-}
+    ) : ResultsItem()
 
-class Label {
+
+@JsonClass(generateAdapter = true)
+data class Label(
 
     @Json(name = "url")
-    val url: String? = null
+    val url: String? = null,
 
     @Json(name = "name")
-    val name: String? = null
+    val name: String? = null,
 
     @Json(name = "color")
-    val color: String? = null
+    val color: String? = null,
 
-}
+    )
 
 @JsonClass(generateAdapter = true)
-class PullRequest {
+data class PullRequest(
 
     @Json(name = "html_url")
-    val htmlUrl: Any? = null
+    val htmlUrl: Any? = null,
 
     @Json(name = "diff_url")
-    val diffUrl: Any? = null
+    val diffUrl: Any? = null,
 
     @Json(name = "patch_url")
-    val patchUrl: Any? = null
+    val patchUrl: Any? = null,
 
-}
+    )
 
 @JsonClass(generateAdapter = true)
-class User {
+class User(
 
     @Json(name = "login")
-    val login: String? = null
+    val login: String? = null,
 
     @Json(name = "id")
-    val id: Int = 0
+    val id: Int = 0,
 
     @Json(name = "avatar_url")
-    val avatarUrl: String? = null
+    val avatarUrl: String? = null,
 
     @Json(name = "gravatar_id")
-    val gravatarId: String? = null
+    val gravatarId: String? = null,
 
     @Json(name = "url")
-    val url: String? = null
+    val url: String? = null,
 
     @Json(name = "html_url")
-    val htmlUrl: String? = null
+    val htmlUrl: String? = null,
 
     @Json(name = "followers_url")
-    val followersUrl: String? = null
+    val followersUrl: String? = null,
 
     @Json(name = "following_url")
-    val followingUrl: String? = null
+    val followingUrl: String? = null,
 
     @Json(name = "gists_url")
-    val gistsUrl: String? = null
+    val gistsUrl: String? = null,
 
     @Json(name = "starred_url")
-    val starredUrl: String? = null
+    val starredUrl: String? = null,
 
     @Json(name = "subscriptions_url")
-    val subscriptionsUrl: String? = null
+    val subscriptionsUrl: String? = null,
 
     @Json(name = "organizations_url")
-    val organizationsUrl: String? = null
+    val organizationsUrl: String? = null,
 
     @Json(name = "repos_url")
-    val reposUrl: String? = null
+    val reposUrl: String? = null,
 
     @Json(name = "events_url")
-    val eventsUrl: String? = null
+    val eventsUrl: String? = null,
 
     @Json(name = "received_events_url")
-    val receivedEventsUrl: String? = null
+    val receivedEventsUrl: String? = null,
 
     @Json(name = "type")
-    val type: String? = null
+    val type: String? = null,
 
-}
+    )

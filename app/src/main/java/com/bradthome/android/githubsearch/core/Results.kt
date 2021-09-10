@@ -12,6 +12,9 @@ sealed class ResultState<T> {
 
     data class Empty<T>(val reason: Any? = null) : ResultState<T>()
 
+    val successValue: T?
+        get() = (this as? GitResult.Success<T>)?.value
+
     inline fun <R> onResult(
         error: GitResult.Error<T>.() -> R? = { null },
         empty: Empty<T>.() -> R? = { null },

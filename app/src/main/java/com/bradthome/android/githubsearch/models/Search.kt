@@ -48,29 +48,35 @@ enum class SortOptions(val key: String, val value: String) {
  */
 
 
-sealed class SearchApis<T>(
+sealed class SearchApis<T : ResultsItem>(
     val title: String,
-    val networkCall: suspend GithubApi.(query: String, pageNumber: Int, sort: String?, order: String?) -> T,
+    val networkCall: suspend GithubApi.(query: String, pageNumber: Int, sort: String?, order: String?) -> Results<T>,
     val sortOptions: Set<SortOptions>,
-) : Parcelable
+) : Parcelable {
+    companion object {
+        val values by lazy {
+            SearchApis::class.sealedSubclasses.map { it.objectInstance as SearchApis }
+        }
+    }
+}
 
 @Parcelize
-object SearchRepositories : SearchApis<RepositoriesResponse>("Repos",
+object SearchRepositories : SearchApis<GithubRepo>("Repos",
     GithubApi::repos,
     setOf(SortOptions.STARS, SortOptions.FORKS, SortOptions.UPDATED, SortOptions.BEST_MATCH))
 
 @Parcelize
-object SearchCommits : SearchApis<CommitsResponse>("Commits",
+object SearchCommits : SearchApis<CommitItem>("Commits",
     GithubApi::commits,
     setOf(SortOptions.AUTHOR_DATE, SortOptions.COMMITTER_DATE, SortOptions.BEST_MATCH))
 
 @Parcelize
-object SearchIssues : SearchApis<IssuesResponse>("Issues",
+object SearchIssues : SearchApis<IssueItem>("Issues",
     GithubApi::issues,
     setOf(SortOptions.COMMENTS, SortOptions.CREATED, SortOptions.UPDATED, SortOptions.BEST_MATCH))
 
 @Parcelize
-object SearchUsers : SearchApis<UsersResponse>("Users",
+object SearchUsers : SearchApis<UserItem>("Users",
     GithubApi::users,
     setOf(SortOptions.FOLLOWERS, SortOptions.REPOS, SortOptions.JOINED, SortOptions.BEST_MATCH))
 
@@ -79,15 +85,16 @@ object SearchUsers : SearchApis<UsersResponse>("Users",
  * Container to store all the api variables
  */
 @Parcelize
-data class SearchOptions<T>(
+data class SearchOptions<T : ResultsItem>(
     val search: SearchApis<T>,
-    val query: Query,
-    val page: Int = 1,
-    val sort: SortOptions = SortOptions.BEST_MATCH,
-    val order: Order = Order.DESC,
+    val searchQuery: SearchQuery,
 ) : Parcelable {
-    suspend fun GithubApi.networkCall(): T {
-        return search.networkCall(this, query.text, page, sort.key, order.order)
+    suspend fun networkCall(githubApi: GithubApi): Results<T> {
+        return search.networkCall(githubApi,
+            searchQuery.query.text,
+            searchQuery.page,
+            searchQuery.sort.key,
+            searchQuery.order.order)
     }
 }
 
@@ -99,5 +106,13 @@ value class Query(val text: String) {
         }
     }
 }
+
+@Parcelize
+data class SearchQuery(
+    val query: Query,
+    val page: Int = 1,
+    val sort: SortOptions = SortOptions.BEST_MATCH,
+    val order: Order = Order.DESC,
+) : Parcelable
 
 

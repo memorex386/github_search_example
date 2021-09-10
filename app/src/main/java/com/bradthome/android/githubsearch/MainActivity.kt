@@ -64,10 +64,10 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 ) { innerPadding ->
-                    NavHost(navController = navController, startDestination = Constants.ISSUES) {
+                    NavHost(navController = navController, startDestination = Constants.REPOSITORIES) {
                         SearchScreen.values.forEach {
                             it.apply {
-                                createNavGraph(navController = navController)
+                                createNavGraph(navController = navController, githubRepository = githubRepository)
                             }
                         }
                     }

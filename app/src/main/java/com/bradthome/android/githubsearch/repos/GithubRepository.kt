@@ -1,6 +1,8 @@
 package com.bradthome.android.githubsearch.repos
 
 import com.bradthome.android.githubsearch.core.GitResult
+import com.bradthome.android.githubsearch.models.Results
+import com.bradthome.android.githubsearch.models.ResultsItem
 import com.bradthome.android.githubsearch.models.SearchOptions
 import com.bradthome.android.githubsearch.network.GithubApi
 import com.squareup.moshi.Moshi
@@ -20,23 +22,23 @@ class GithubRepository(
     private val cache = mutableMapOf<SearchOptions<*>, Any>()
     private val mutex = Mutex()
 
-    private suspend fun <T : Any> getCache(searchOptions: SearchOptions<T>): T? {
+    private suspend fun <T : ResultsItem> getCache(searchOptions: SearchOptions<T>): Results<T>? {
         return mutex.withLock {
-            cache[searchOptions]?.let { it as T }
+            cache[searchOptions]?.let { it as Results<T> }
         }
     }
 
-    private suspend fun <T : Any> saveCache(searchOptions: SearchOptions<T>, value: T) {
+    private suspend fun <T : ResultsItem> saveCache(searchOptions: SearchOptions<T>, value: Results<T>) {
         return mutex.withLock {
             cache[searchOptions] = value
         }
     }
 
-    suspend fun <T : Any> fetch(searchOptions: SearchOptions<T>): GitResult<T> {
+    suspend fun <T : ResultsItem> fetch(searchOptions: SearchOptions<T>): GitResult<out Results<T>> {
         return withContext(context = coroutineContext) {
             searchOptions.run {
                 GitResult.tryCatchSuspend {
-                    getCache(searchOptions = searchOptions) ?: api.networkCall().also {
+                    getCache(searchOptions = searchOptions) ?: networkCall(api).also {
                         saveCache(searchOptions, it)
                     }
                 }

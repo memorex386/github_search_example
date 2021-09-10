@@ -10,228 +10,228 @@ import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-class CommitsResponse : Results<CommitItem>() {
+data class CommitsResponse(
     @Json(name = "items")
-    override val items: List<CommitItem>? = null
-}
+    override val items: List<CommitItem>? = null,
+) : Results<CommitItem>()
 
 
 @JsonClass(generateAdapter = true)
-class GithubAuthor {
+data class GithubAuthor(
 
     @Json(name = "login")
-    val login: String? = null
+    val login: String? = null,
 
     @Json(name = "id")
-    val id: Int = 0
+    val id: Int = 0,
 
     @Json(name = "avatar_url")
-    val avatarUrl: String? = null
+    val avatarUrl: String? = null,
 
     @Json(name = "gravatar_id")
-    val gravatarId: String? = null
+    val gravatarId: String? = null,
 
     @Json(name = "url")
-    val url: String? = null
+    val url: String? = null,
 
     @Json(name = "html_url")
-    val htmlUrl: String? = null
+    val htmlUrl: String? = null,
 
     @Json(name = "followers_url")
-    val followersUrl: String? = null
+    val followersUrl: String? = null,
 
     @Json(name = "following_url")
-    val followingUrl: String? = null
+    val followingUrl: String? = null,
 
     @Json(name = "gists_url")
-    val gistsUrl: String? = null
+    val gistsUrl: String? = null,
 
     @Json(name = "starred_url")
-    val starredUrl: String? = null
+    val starredUrl: String? = null,
 
     @Json(name = "subscriptions_url")
-    val subscriptionsUrl: String? = null
+    val subscriptionsUrl: String? = null,
 
     @Json(name = "organizations_url")
-    val organizationsUrl: String? = null
+    val organizationsUrl: String? = null,
 
     @Json(name = "repos_url")
-    val reposUrl: String? = null
+    val reposUrl: String? = null,
 
     @Json(name = "events_url")
-    val eventsUrl: String? = null
+    val eventsUrl: String? = null,
 
     @Json(name = "received_events_url")
-    val receivedEventsUrl: String? = null
+    val receivedEventsUrl: String? = null,
 
     @Json(name = "type")
-    val type: String? = null
+    val type: String? = null,
 
     @Json(name = "site_admin")
-    val siteAdmin: Boolean = false
+    val siteAdmin: Boolean = false,
 
-}
+    )
 
 @JsonClass(generateAdapter = true)
-class CommitAuthor {
+data class CommitAuthor(
 
     @Json(name = "date")
-    val date: String? = null
+    val date: String? = null,
 
     @Json(name = "name")
-    val name: String? = null
+    val name: String? = null,
 
     @Json(name = "email")
-    val email: String? = null
+    val email: String? = null,
 
-}
+    )
 
 @JsonClass(generateAdapter = true)
-class Commit {
+data class Commit(
 
     @Json(name = "url")
-    val url: String? = null
+    val url: String? = null,
 
     @Json(name = "author")
-    val author: CommitAuthor? = null
+    val author: CommitAuthor? = null,
 
     @Json(name = "committer")
-    val committer: Committer? = null
+    val committer: Committer? = null,
 
     @Json(name = "message")
-    val message: String? = null
+    val message: String? = null,
 
     @Json(name = "tree")
-    val tree: Tree? = null
+    val tree: Tree? = null,
 
     @Json(name = "comment_count")
-    val commentCount: Int = 0
+    val commentCount: Int = 0,
 
-}
+    )
 
 @JsonClass(generateAdapter = true)
-class RepoCommitter {
+data class RepoCommitter(
 
     @Json(name = "login")
-    val login: String? = null
+    val login: String? = null,
 
     @Json(name = "id")
-    val id: Int = 0
+    val id: Int = 0,
 
     @Json(name = "avatar_url")
-    val avatarUrl: String? = null
+    val avatarUrl: String? = null,
 
     @Json(name = "gravatar_id")
-    val gravatarId: String? = null
+    val gravatarId: String? = null,
 
     @Json(name = "url")
-    val url: String? = null
+    val url: String? = null,
 
     @Json(name = "html_url")
-    val htmlUrl: String? = null
+    val htmlUrl: String? = null,
 
     @Json(name = "followers_url")
-    val followersUrl: String? = null
+    val followersUrl: String? = null,
 
     @Json(name = "following_url")
-    val followingUrl: String? = null
+    val followingUrl: String? = null,
 
     @Json(name = "gists_url")
-    val gistsUrl: String? = null
+    val gistsUrl: String? = null,
 
     @Json(name = "starred_url")
-    val starredUrl: String? = null
+    val starredUrl: String? = null,
 
     @Json(name = "subscriptions_url")
-    val subscriptionsUrl: String? = null
+    val subscriptionsUrl: String? = null,
 
     @Json(name = "organizations_url")
-    val organizationsUrl: String? = null
+    val organizationsUrl: String? = null,
 
     @Json(name = "repos_url")
-    val reposUrl: String? = null
+    val reposUrl: String? = null,
 
     @Json(name = "events_url")
-    val eventsUrl: String? = null
+    val eventsUrl: String? = null,
 
     @Json(name = "received_events_url")
-    val receivedEventsUrl: String? = null
+    val receivedEventsUrl: String? = null,
 
     @Json(name = "type")
-    val type: String? = null
+    val type: String? = null,
 
     @Json(name = "site_admin")
-    val siteAdmin: Boolean = false
+    val siteAdmin: Boolean = false,
 
-}
+    )
 
 @JsonClass(generateAdapter = true)
-class Committer {
+data class Committer(
 
     @Json(name = "date")
-    val date: String? = null
+    val date: String? = null,
 
     @Json(name = "name")
-    val name: String? = null
+    val name: String? = null,
 
     @Json(name = "email")
-    val email: String? = null
+    val email: String? = null,
 
-}
+    )
 
 @JsonClass(generateAdapter = true)
-class CommitItem : ResultsItem() {
+data class CommitItem(
 
     @Json(name = "url")
-    val url: String? = null
+    val url: String? = null,
 
     @Json(name = "sha")
-    val sha: String? = null
+    val sha: String? = null,
 
     @Json(name = "comments_url")
-    val commentsUrl: String? = null
+    val commentsUrl: String? = null,
 
     @Json(name = "commit")
-    val commit: Commit? = null
+    val commit: Commit? = null,
 
     @Json(name = "author")
-    val author: GithubAuthor? = null
+    val author: GithubAuthor? = null,
 
     @Json(name = "committer")
-    val committer: RepoCommitter? = null
+    val committer: RepoCommitter? = null,
 
     @Json(name = "parents")
-    val parents: List<Parent>? = null
+    val parents: List<Parent>? = null,
 
     @Json(name = "repository")
-    val repository: GithubRepo? = null
+    val repository: GithubRepo? = null,
 
     @Json(name = "score")
-    val score: Float = 0.toFloat()
+    val score: Float = 0.toFloat(),
 
-}
+    ) : ResultsItem()
 
 @JsonClass(generateAdapter = true)
-class Parent {
+data class Parent(
 
     @Json(name = "url")
-    val url: String? = null
+    val url: String? = null,
 
     @Json(name = "html_url")
-    val htmlUrl: String? = null
+    val htmlUrl: String? = null,
 
     @Json(name = "sha")
-    val sha: String? = null
+    val sha: String? = null,
 
-}
+    )
 
 @JsonClass(generateAdapter = true)
-class Tree {
+data class Tree(
 
     @Json(name = "url")
-    val url: String? = null
+    val url: String? = null,
 
     @Json(name = "sha")
-    val sha: String? = null
+    val sha: String? = null,
 
-}
+    )

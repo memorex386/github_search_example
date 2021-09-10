@@ -4,50 +4,49 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-class UserItem : ResultsItem() {
+data class UserItem(
 
     @Json(name = "login")
-    val login: String? = null
+    val login: String? = null,
 
     @Json(name = "id")
-    val id: Int = 0
+    val id: Int = 0,
 
     @Json(name = "avatar_url")
-    val avatarUrl: String? = null
+    val avatarUrl: String? = null,
 
     @Json(name = "gravatar_id")
-    val gravatarId: String? = null
+    val gravatarId: String? = null,
 
     @Json(name = "url")
-    val url: String? = null
+    val url: String? = null,
 
     @Json(name = "followers_url")
-    val followersUrl: String? = null
+    val followersUrl: String? = null,
 
     @Json(name = "subscriptions_url")
-    val subscriptionsUrl: String? = null
+    val subscriptionsUrl: String? = null,
 
     @Json(name = "organizations_url")
-    val organizationsUrl: String? = null
+    val organizationsUrl: String? = null,
 
     @Json(name = "repos_url")
-    val reposUrl: String? = null
+    val reposUrl: String? = null,
 
     @Json(name = "received_events_url")
-    val receivedEventsUrl: String? = null
+    val receivedEventsUrl: String? = null,
 
     @Json(name = "type")
-    val type: String? = null
+    val type: String? = null,
 
     @Json(name = "score")
-    val score: Float = 0.toFloat()
+    val score: Float = 0.toFloat(),
 
-}
+    ) : ResultsItem()
 
 @JsonClass(generateAdapter = true)
-class UsersResponse : Results<UserItem>() {
-
+data class UsersResponse(
     @Json(name = "items")
-    override val items: List<UserItem>? = null
+    override val items: List<UserItem>? = null,
 
-}
+    ) : Results<UserItem>()
