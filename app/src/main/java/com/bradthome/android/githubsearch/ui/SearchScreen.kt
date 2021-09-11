@@ -28,7 +28,7 @@ sealed class SearchScreen<R : ResultsItem>(
             val viewModel = GithubViewModel(githubRepository = githubRepository,
                 scope = rememberCoroutineScope(),
                 searchApis = searchApis)
-            viewModel.fetch(SearchQuery(Query("sdf")))
+            viewModel.fetch(SearchQuery(Query("a")))
             val state = viewModel.state.collectAsState()
             navGraph(navController, state)
         }
