@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.min
 
 class GithubViewModel<T : ResultsItem>(
     val githubRepository: GithubRepository,
@@ -21,11 +22,18 @@ class GithubViewModel<T : ResultsItem>(
     val state = _state.asStateFlow()
 
     fun fetch(searchQuery: SearchQuery) {
+        _state.value = ResultState.Empty()
         viewModelScope.launch(ioContext) {
             _state.value = GitResult.Success(githubRepository.fetch(searchOptions = SearchOptions(search = searchApis,
                 searchQuery = searchQuery)))
-
         }
+    }
+
+    fun updatePage(page: Int) {
+        val value = state.value.successValue ?: return
+        val query = value.searchOptions.searchQuery
+        val results = value.state.successValue?.totalPages ?: return
+        fetch(query.copy(page = 1.coerceAtLeast(min(results, page))))
     }
 
 }

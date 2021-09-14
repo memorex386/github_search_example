@@ -2,6 +2,7 @@ package com.bradthome.android.githubsearch.ui
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -56,11 +57,17 @@ sealed class SearchScreen<R : ResultsItem>(
                 }, error = {
                     Text(text = exception.message ?: "Broken Call", modifier = Modifier.align(Alignment.Center))
                 }, success = {
-                    this.value.state.onResult(success = {
-                        LazyColumn(Modifier.fillMaxWidth()) {
-                            items(items = value.items.orEmpty()) {
-                                navGraph(navController, it)
+                    val searchResults = value
+                    searchResults.state.onResult(success = {
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            LazyColumn(Modifier
+                                .fillMaxWidth()
+                                .weight(1f)) {
+                                items(items = value.items.orEmpty()) {
+                                    navGraph(navController, it)
+                                }
                             }
+                            PagerCompose(searchResults = searchResults, viewModel::updatePage)
                         }
                     }, error = {
                         Button(onClick = { viewModel.fetch(value.searchOptions.searchQuery) }) {

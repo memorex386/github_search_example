@@ -22,7 +22,7 @@ interface Results<resultsItemType : ResultsItem> {
         get() = when (val count = totalCount) {
             null -> null
             0 -> 0
-            else -> ceil(30.0 / count.toDouble()).toInt()
+            else -> ceil(count.toDouble() / 30.0).toInt()
         }
 }
 
