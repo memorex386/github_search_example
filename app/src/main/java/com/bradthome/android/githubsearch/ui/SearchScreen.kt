@@ -1,9 +1,17 @@
 package com.bradthome.android.githubsearch.ui
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -12,19 +20,19 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.bradthome.android.githubsearch.R
 import com.bradthome.android.githubsearch.core.Constants
-import com.bradthome.android.githubsearch.core.ResultState
 import com.bradthome.android.githubsearch.models.*
 import com.bradthome.android.githubsearch.repos.GithubRepository
-import com.bradthome.android.githubsearch.ui.screens.IssuesCompose
-import com.bradthome.android.githubsearch.ui.screens.RepositoriesCompose
-import com.bradthome.android.githubsearch.ui.screens.UsersCompose
+import com.bradthome.android.githubsearch.ui.screens.CommitItemCompose
+import com.bradthome.android.githubsearch.ui.screens.IssueItemCompose
+import com.bradthome.android.githubsearch.ui.screens.RepositoriesItemCompose
+import com.bradthome.android.githubsearch.ui.screens.UsersItemCompose
 import com.bradthome.android.githubsearch.viewmodel.GithubViewModel
 
 sealed class SearchScreen<R : ResultsItem>(
     val searchApis: SearchApis<R>,
     @StringRes val titleRes: Int,
     val pathName: String,
-    val navGraph: @Composable SearchScreen<R>.(NavController, State<ResultState<out Results<R>>>) -> Unit,
+    val navGraph: @Composable SearchScreen<R>.(NavController, R) -> Unit,
 ) {
 
     fun NavGraphBuilder.createNavGraph(
@@ -41,9 +49,21 @@ sealed class SearchScreen<R : ResultsItem>(
                         it.fetch(SearchQuery(Query("a")))
                     } as T
                 }
-            })
-            val state = viewModel.state.collectAsState()
-            navGraph(navController, state)
+            }, key = "${searchApis.title}NavState")
+            Box(modifier = Modifier.fillMaxSize()) {
+                val state = viewModel.state.collectAsState()
+                state.value.onResult(empty = {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }, error = {
+                    Text(text = exception.message ?: "Broken Call", modifier = Modifier.align(Alignment.Center))
+                }, success = {
+                    LazyColumn(Modifier.fillMaxWidth()) {
+                        items(items = value.items.orEmpty()) {
+                            navGraph(navController, it)
+                        }
+                    }
+                })
+            }
         }
     }
 
@@ -62,7 +82,7 @@ object Repositories :
         titleRes = R.string.repositories,
         pathName = Constants.REPOSITORIES,
         navGraph = { navController, state ->
-            RepositoriesCompose(state.value.successValue?.items.orEmpty())
+            RepositoriesItemCompose(state)
         })
 
 object Users : SearchScreen<UserItem>(
@@ -70,23 +90,23 @@ object Users : SearchScreen<UserItem>(
     titleRes = R.string.users,
     pathName = Constants.USERS,
     navGraph = { navController, state ->
-        UsersCompose(state.value.successValue?.items.orEmpty())
+        UsersItemCompose(state)
     })
 
-/**
+
 object Commits : SearchScreen<CommitItem>(
-searchApis = SearchCommits,
-titleRes = R.string.commits,
-pathName = Constants.COMMITS,
-navGraph = {
-RepositoriesCompose()
-})
- **/
+    searchApis = SearchCommits,
+    titleRes = R.string.commits,
+    pathName = Constants.COMMITS,
+    navGraph = { navController, state ->
+        CommitItemCompose(state)
+    })
+
 object Issues : SearchScreen<IssueItem>(
     searchApis = SearchIssues,
     titleRes = R.string.issues,
     pathName = Constants.ISSUES,
     navGraph = { navController, state ->
-        IssuesCompose(state.value.successValue?.items.orEmpty())
+        IssueItemCompose(state)
     })
 

@@ -12,12 +12,13 @@ import retrofit2.http.Query
 /**
  * Created by bradley.thome on 10/17/17.
  */
-private const val ACCEPT = "Accept: application/vnd.github.cloak-preview+json"
+private const val ACCEPT_PREVIEW = "Accept: application/vnd.github.cloak-preview+json"
+private const val ACCEPT_V3 = "Accept: application/vnd.github.v3+json"
 
 interface GithubApi {
 
     @GET("search/repositories")
-    @Headers(ACCEPT)
+    @Headers(ACCEPT_V3)
     suspend fun repos(
         @Query("q") query: String,
         @Query("page") pageNumber: Int,
@@ -26,7 +27,7 @@ interface GithubApi {
     ): RepositoriesResponse
 
     @GET("search/issues")
-    @Headers(ACCEPT)
+    @Headers(ACCEPT_V3)
     suspend fun issues(
         @Query("q") query: String,
         @Query("page") pageNumber: Int,
@@ -36,7 +37,7 @@ interface GithubApi {
             : IssuesResponse
 
     @GET("search/users")
-    @Headers(ACCEPT)
+    @Headers(ACCEPT_V3)
     suspend fun users(
         @Query("q") query: String,
         @Query("page") pageNumber: Int,
@@ -46,7 +47,7 @@ interface GithubApi {
             : UsersResponse
 
     @GET("search/commits")
-    @Headers(ACCEPT)
+    @Headers(ACCEPT_PREVIEW)
     suspend fun commits(
         @Query("q") query: String,
         @Query("page") pageNumber: Int,

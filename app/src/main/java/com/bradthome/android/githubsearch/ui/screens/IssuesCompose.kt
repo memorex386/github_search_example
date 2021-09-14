@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -44,89 +42,85 @@ import io.noties.markwon.Markwon
 
 
 @Composable
-fun IssuesCompose(data: List<IssueItem>) {
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-        items(items = data, key = { it.id }) { repoItem ->
-            var isExpanded by rememberSaveable { mutableStateOf(false) }
-            var canExpand by rememberSaveable { mutableStateOf<Boolean?>(null) }
-            val angle: Float by animateFloatAsState(
-                targetValue = if (!isExpanded) 0f else 180f,
-                animationSpec = tween(
-                    durationMillis = 200,
-                    easing = LinearEasing
-                )
-            )
-            Column(modifier = Modifier
-                .fillMaxWidth()) {
-                Row(modifier = Modifier
-                    .padding(start = 12.dp, end = 12.dp, top = 20.dp, bottom = 20.dp)) {
-                    Image(painter = painterResource(id = R.drawable.ic_issues_icon),
-                        contentDescription = "Repo Icon",
-                        colorFilter = ColorFilter.tint(Color.Black),
-                        modifier = Modifier.padding(top = 4.dp, end = 4.dp))
-                    Column {
-                        Row(modifier = Modifier.padding(top = 4.dp)) {
-                            Text(text = repoItem.repositoryUrl.orEmpty()
-                                .replace("${GithubApi.GITHUB_HOST}/repos/", ""),
-                                fontSize = 10.sp, fontWeight = FontWeight.SemiBold, color = Color.DarkGray)
-                            Text(text = " #${repoItem.number}",
-                                fontSize = 10.sp)
-                        }
-
-                        Text(text = repoItem.title.orEmpty(), color = MyColors.CoolBlue)
-
-                        repoItem.body?.takeIf { it.isNotBlank() }?.also {
-                            Row {
-                                val context = LocalContext.current
-                                val markwon = Markwon.create(context);
-                                val markdown = markwon.toMarkdown(repoItem.body.orEmpty());
-                                val customLinkifyTextView = remember {
-                                    TextView(context)
-                                }
-                                AndroidView(modifier = Modifier
-                                    .padding(top = 6.dp)
-                                    .weight(weight = 1f)
-                                    .animateContentSize(),
-                                    factory = { customLinkifyTextView }) { textView ->
-                                    textView.text = markdown
-                                    textView.maxLines = if (!isExpanded) 3 else Int.MAX_VALUE
-                                    textView.ellipsize = TextUtils.TruncateAt.END
-                                    if (canExpand == null) textView.post {
-                                        textView.layout?.apply {
-                                            canExpand = (lineCount > 0 && getEllipsisCount(lineCount - 1) > 0)
-                                        }
-                                    }
-                                }
-                                Icon(Icons.Filled.ArrowDropDown,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .clickable { if (canExpand == true) isExpanded = !isExpanded }
-                                        .alpha(if (canExpand == true) 1f else 0f)
-                                        .padding(8.dp)
-                                        .rotate(angle))
-                            }
-
-                        }
-
-                        Row(verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(top = 4.dp)) {
-                            Image(painter = painterResource(id = R.drawable.ic_star_icon),
-                                contentDescription = "Star Icon",
-                                colorFilter = ColorFilter.tint(Color.Black),
-                                modifier = Modifier.padding(end = 4.dp))
-                            Text(
-                                text = DateUtil.isoDate(repoItem.updatedAt)?.let { date ->
-                                    "Updated on ${DateUtil.legibleString(date)}"
-                                }.orEmpty(),
-                                fontSize = 10.sp,
-                                modifier = Modifier.padding(start = 8.dp)
-                            )
-                        }
-                    }
+fun IssueItemCompose(repoItem: IssueItem) {
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
+    var canExpand by rememberSaveable { mutableStateOf<Boolean?>(null) }
+    val angle: Float by animateFloatAsState(
+        targetValue = if (!isExpanded) 0f else 180f,
+        animationSpec = tween(
+            durationMillis = 200,
+            easing = LinearEasing
+        )
+    )
+    Column(modifier = Modifier
+        .fillMaxWidth()) {
+        Row(modifier = Modifier
+            .padding(start = 12.dp, end = 12.dp, top = 20.dp, bottom = 20.dp)) {
+            Image(painter = painterResource(id = R.drawable.ic_issues_icon),
+                contentDescription = "Repo Icon",
+                colorFilter = ColorFilter.tint(Color.Black),
+                modifier = Modifier.padding(top = 4.dp, end = 4.dp))
+            Column {
+                Row(modifier = Modifier.padding(top = 4.dp)) {
+                    Text(text = repoItem.repositoryUrl.orEmpty()
+                        .replace("${GithubApi.GITHUB_HOST}/repos/", ""),
+                        fontSize = 10.sp, fontWeight = FontWeight.SemiBold, color = Color.DarkGray)
+                    Text(text = " #${repoItem.number}",
+                        fontSize = 10.sp)
                 }
-                Divider(color = Color.LightGray, thickness = 2.dp)
+
+                Text(text = repoItem.title.orEmpty(), color = MyColors.CoolBlue)
+
+                repoItem.body?.takeIf { it.isNotBlank() }?.also {
+                    Row {
+                        val context = LocalContext.current
+                        val markwon = Markwon.create(context);
+                        val markdown = markwon.toMarkdown(repoItem.body.orEmpty());
+                        val customLinkifyTextView = remember {
+                            TextView(context)
+                        }
+                        AndroidView(modifier = Modifier
+                            .padding(top = 6.dp)
+                            .weight(weight = 1f)
+                            .animateContentSize(),
+                            factory = { customLinkifyTextView }) { textView ->
+                            textView.text = markdown
+                            textView.maxLines = if (!isExpanded) 3 else Int.MAX_VALUE
+                            textView.ellipsize = TextUtils.TruncateAt.END
+                            if (canExpand == null) textView.post {
+                                textView.layout?.apply {
+                                    canExpand = (lineCount > 0 && getEllipsisCount(lineCount - 1) > 0)
+                                }
+                            }
+                        }
+                        Icon(Icons.Filled.ArrowDropDown,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .clickable { if (canExpand == true) isExpanded = !isExpanded }
+                                .alpha(if (canExpand == true) 1f else 0f)
+                                .padding(8.dp)
+                                .rotate(angle))
+                    }
+
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 4.dp)) {
+                    Image(painter = painterResource(id = R.drawable.ic_star_icon),
+                        contentDescription = "Star Icon",
+                        colorFilter = ColorFilter.tint(Color.Black),
+                        modifier = Modifier.padding(end = 4.dp))
+                    Text(
+                        text = DateUtil.isoDate(repoItem.updatedAt)?.let { date ->
+                            "Updated on ${DateUtil.legibleString(date)}"
+                        }.orEmpty(),
+                        fontSize = 10.sp,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
             }
         }
+        Divider(color = Color.LightGray, thickness = 2.dp)
     }
 }
 
@@ -135,10 +129,10 @@ fun IssuesCompose(data: List<IssueItem>) {
 @Composable
 fun IssuesPreview() {
     GithubSearchTheme {
-        IssuesCompose(data = listOf(IssueItem(
+        IssueItemCompose(IssueItem(
             title = "Load me now",
             body = "Body to show",
             repositoryUrl = "https://api.github.com/repos/michaelday008/AnyRPGCore",
-        )))
+        ))
     }
 }

@@ -12,5 +12,13 @@ object DateUtil {
         null
     }
 
+    fun isoOffsetTime(date: String?) = try {
+        date?.let {
+            SimpleDateFormat("yyyy-MM-dd").parse(it.split("T")[0])
+        }
+    } catch (e: Exception) {
+        null
+    }
+
     fun legibleString(date: Date) = SimpleDateFormat("MMM dd, yyyy").format(date)
 }
