@@ -50,6 +50,7 @@ enum class SortOptions(val key: String, val value: String) {
 
 sealed class SearchApis<T : ResultsItem>(
     val title: String,
+    val expandedUiItem: Boolean = true,
     val networkCall: suspend GithubApi.(query: String, pageNumber: Int, sort: String?, order: String?) -> Results<T>,
     val sortOptions: Set<SortOptions>,
 ) : Parcelable {
@@ -62,23 +63,24 @@ sealed class SearchApis<T : ResultsItem>(
 
 @Parcelize
 object SearchRepositories : SearchApis<GithubRepo>("Repos",
-    GithubApi::repos,
-    setOf(SortOptions.STARS, SortOptions.FORKS, SortOptions.UPDATED, SortOptions.BEST_MATCH))
+    networkCall = GithubApi::repos,
+    sortOptions = setOf(SortOptions.STARS, SortOptions.FORKS, SortOptions.UPDATED, SortOptions.BEST_MATCH))
 
 @Parcelize
 object SearchCommits : SearchApis<CommitItem>("Commits",
-    GithubApi::commits,
-    setOf(SortOptions.AUTHOR_DATE, SortOptions.COMMITTER_DATE, SortOptions.BEST_MATCH))
+    networkCall = GithubApi::commits,
+    sortOptions = setOf(SortOptions.AUTHOR_DATE, SortOptions.COMMITTER_DATE, SortOptions.BEST_MATCH))
 
 @Parcelize
 object SearchIssues : SearchApis<IssueItem>("Issues",
-    GithubApi::issues,
-    setOf(SortOptions.COMMENTS, SortOptions.CREATED, SortOptions.UPDATED, SortOptions.BEST_MATCH))
+    expandedUiItem = false,
+    networkCall = GithubApi::issues,
+    sortOptions = setOf(SortOptions.COMMENTS, SortOptions.CREATED, SortOptions.UPDATED, SortOptions.BEST_MATCH))
 
 @Parcelize
 object SearchUsers : SearchApis<UserItem>("Users",
-    GithubApi::users,
-    setOf(SortOptions.FOLLOWERS, SortOptions.REPOS, SortOptions.JOINED, SortOptions.BEST_MATCH))
+    networkCall = GithubApi::users,
+    sortOptions = setOf(SortOptions.FOLLOWERS, SortOptions.REPOS, SortOptions.JOINED, SortOptions.BEST_MATCH))
 
 
 /**

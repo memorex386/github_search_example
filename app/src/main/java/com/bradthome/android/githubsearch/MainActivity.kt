@@ -3,12 +3,14 @@ package com.bradthome.android.githubsearch
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -70,12 +72,13 @@ fun MainScreen(githubRepository: GithubRepository) {
                 }
             }
         ) { innerPadding ->
-            NavHost(navController = navController, startDestination = SearchScreen.values[0].pathName) {
+            NavHost(navController = navController,
+                modifier = Modifier.padding(innerPadding),
+                startDestination = SearchScreen.values[0].pathName) {
                 SearchScreen.values.forEach {
                     it.apply {
                         createNavGraph(navController = navController,
-                            githubRepository = githubRepository,
-                            scope = scope)
+                            githubRepository = githubRepository)
                     }
                 }
             }
