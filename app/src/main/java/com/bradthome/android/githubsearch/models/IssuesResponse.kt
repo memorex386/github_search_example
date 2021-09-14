@@ -11,10 +11,16 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class IssuesResponse(
 
+    @Json(name = "total_count")
+    override val totalCount: Int? = null,
+
+    @Json(name = "incomplete_results")
+    override val incompleteResults: Boolean? = null,
+
     @Json(name = "items")
     override val items: List<IssueItem>? = null,
 
-    ) : Results<IssueItem>()
+    ) : Results<IssueItem>
 
 @JsonClass(generateAdapter = true)
 data class IssueItem(
@@ -79,7 +85,11 @@ data class IssueItem(
     @Json(name = "score")
     val score: Float = 0.toFloat(),
 
-    ) : ResultsItem()
+
+    @Json(name = "html_url")
+    override val htmlUrl: String? = null,
+
+    ) : ResultsItem
 
 
 @JsonClass(generateAdapter = true)

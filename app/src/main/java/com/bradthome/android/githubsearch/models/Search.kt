@@ -50,7 +50,7 @@ enum class SortOptions(val key: String, val value: String) {
 
 sealed class SearchApis<T : ResultsItem>(
     val title: String,
-    val expandedUiItem: Boolean = true,
+    val listSizePerPage: Int = 30,
     val networkCall: suspend GithubApi.(query: String, pageNumber: Int, sort: String?, order: String?) -> Results<T>,
     val sortOptions: Set<SortOptions>,
 ) : Parcelable {
@@ -73,7 +73,6 @@ object SearchCommits : SearchApis<CommitItem>("Commits",
 
 @Parcelize
 object SearchIssues : SearchApis<IssueItem>("Issues",
-    expandedUiItem = false,
     networkCall = GithubApi::issues,
     sortOptions = setOf(SortOptions.COMMENTS, SortOptions.CREATED, SortOptions.UPDATED, SortOptions.BEST_MATCH))
 

@@ -9,10 +9,16 @@ import kotlinx.parcelize.Parcelize
 @JsonClass(generateAdapter = true)
 data class CommitsResponse(
 
+    @Json(name = "total_count")
+    override val totalCount: Int? = null,
+
+    @Json(name = "incomplete_results")
+    override val incompleteResults: Boolean? = null,
+
     @Json(name = "items")
     override val items: List<CommitItem>? = null,
 
-    ) : Results<CommitItem>()
+    ) : Results<CommitItem>
 
 @Parcelize
 @JsonClass(generateAdapter = true)
@@ -47,7 +53,11 @@ data class CommitItem(
 
     @Json(name = "parents")
     val parents: List<ParentsItem?>? = null,
-) : ResultsItem(), Parcelable
+
+    @Json(name = "html_url")
+    override val htmlUrl: String? = null,
+
+    ) : ResultsItem, Parcelable
 
 @Parcelize
 @JsonClass(generateAdapter = true)

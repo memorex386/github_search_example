@@ -1,25 +1,36 @@
 package com.bradthome.android.githubsearch.models
 
+import com.bradthome.android.githubsearch.core.GitResult
 import com.squareup.moshi.Json
+import java.lang.Math.ceil
 
 /**
  * Created by bradley.thome on 10/17/17.
  */
 
-abstract class Results<resultsItemType : ResultsItem>() {
+interface Results<resultsItemType : ResultsItem> {
     @Json(name = "total_count")
-    val totalCount: Int? = null
+    val totalCount: Int?
 
     @Json(name = "incomplete_results")
-    val incompleteResults: Boolean? = null
+    val incompleteResults: Boolean?
 
     @Json(name = "items")
-    open val items: List<resultsItemType>? = null
+    val items: List<resultsItemType>?
+
+    val totalPages
+        get() = when (val count = totalCount) {
+            null -> null
+            0 -> 0
+            else -> ceil(30.0 / count.toDouble()).toInt()
+        }
 }
 
 
-abstract class ResultsItem() {
+interface ResultsItem {
     @Json(name = "html_url")
-    val htmlUrl: String? = null
+    val htmlUrl: String?
 }
+
+data class SearchResults<T : ResultsItem>(val searchOptions: SearchOptions<T>, val state: GitResult<out Results<T>>)
 

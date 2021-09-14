@@ -8,9 +8,17 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class RepositoriesResponse(
+
+    @Json(name = "total_count")
+    override val totalCount: Int? = null,
+
+    @Json(name = "incomplete_results")
+    override val incompleteResults: Boolean? = null,
+
     @Json(name = "items")
     override val items: List<GithubRepo>? = null,
-) : Results<GithubRepo>()
+
+    ) : Results<GithubRepo>
 
 @JsonClass(generateAdapter = true)
 data class Owner(
@@ -277,5 +285,9 @@ data class GithubRepo(
 
     @Json(name = "score")
     val score: Float? = null,
-) : ResultsItem()
+
+    @Json(name = "html_url")
+    override val htmlUrl: String? = null,
+
+    ) : ResultsItem
 

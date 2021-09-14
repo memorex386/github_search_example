@@ -42,11 +42,21 @@ data class UserItem(
     @Json(name = "score")
     val score: Float = 0.toFloat(),
 
-    ) : ResultsItem()
+    @Json(name = "html_url")
+    override val htmlUrl: String? = null,
+
+    ) : ResultsItem
 
 @JsonClass(generateAdapter = true)
 data class UsersResponse(
+
+    @Json(name = "total_count")
+    override val totalCount: Int? = null,
+
+    @Json(name = "incomplete_results")
+    override val incompleteResults: Boolean? = null,
+
     @Json(name = "items")
     override val items: List<UserItem>? = null,
 
-    ) : Results<UserItem>()
+    ) : Results<UserItem>

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -39,8 +40,6 @@ sealed class SearchScreen<R : ResultsItem>(
         navController: NavController,
         githubRepository: GithubRepository,
     ) {
-
-
         composable(pathName) {
             val viewModel: GithubViewModel<R> = viewModel(factory = object : ViewModelProvider.Factory {
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -49,7 +48,7 @@ sealed class SearchScreen<R : ResultsItem>(
                         it.fetch(SearchQuery(Query("a")))
                     } as T
                 }
-            }, key = "${searchApis.title}NavState")
+            }, key = "${searchApis.title}NavStateViewModel")
             Box(modifier = Modifier.fillMaxSize()) {
                 val state = viewModel.state.collectAsState()
                 state.value.onResult(empty = {
@@ -57,11 +56,18 @@ sealed class SearchScreen<R : ResultsItem>(
                 }, error = {
                     Text(text = exception.message ?: "Broken Call", modifier = Modifier.align(Alignment.Center))
                 }, success = {
-                    LazyColumn(Modifier.fillMaxWidth()) {
-                        items(items = value.items.orEmpty()) {
-                            navGraph(navController, it)
+                    this.value.state.onResult(success = {
+                        LazyColumn(Modifier.fillMaxWidth()) {
+                            items(items = value.items.orEmpty()) {
+                                navGraph(navController, it)
+                            }
                         }
-                    }
+                    }, error = {
+                        Button(onClick = { viewModel.fetch(value.searchOptions.searchQuery) }) {
+                            Text(text = "Retry")
+                        }
+                    })
+
                 })
             }
         }

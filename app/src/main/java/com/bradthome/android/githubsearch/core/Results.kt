@@ -35,7 +35,7 @@ sealed class ResultState<T> {
 sealed class GitResult<T>(val isSuccess: Boolean) : ResultState<T>() {
 
     data class Success<T>(val value: T) : GitResult<T>(isSuccess = true)
-    class Error<T>(val exception: Exception = Exception("Failed")) : GitResult<T>(isSuccess = false)
+    data class Error<T>(val exception: Exception = Exception("Failed")) : GitResult<T>(isSuccess = false)
 
     inline fun <R> onResult(
         error: Error<T>.() -> R? = { null },
