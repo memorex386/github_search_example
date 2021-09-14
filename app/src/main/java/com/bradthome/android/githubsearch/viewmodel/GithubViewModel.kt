@@ -24,7 +24,6 @@ class GithubViewModel<T : ResultsItem>(
             val result =
                 githubRepository.fetch(searchOptions = SearchOptions(search = searchApis, searchQuery = searchQuery))
             _state.value = result
-            //  GitResult.Success(RepositoriesResponse(items = listOfNotNull(GithubRepo(id = 1), GithubRepo(id = 2), GithubRepo(id = 3)))) as ResultState<out Results<T>>
 
         }
     }

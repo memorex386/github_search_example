@@ -27,7 +27,7 @@ interface GithubApi {
 
     @GET("search/issues")
     @Headers(ACCEPT)
-    fun issues(
+    suspend fun issues(
         @Query("q") query: String,
         @Query("page") pageNumber: Int,
         @Query("sort") sort: String? = null,
@@ -37,7 +37,7 @@ interface GithubApi {
 
     @GET("search/users")
     @Headers(ACCEPT)
-    fun users(
+    suspend fun users(
         @Query("q") query: String,
         @Query("page") pageNumber: Int,
         @Query("sort") sort: String? = null,
@@ -47,12 +47,16 @@ interface GithubApi {
 
     @GET("search/commits")
     @Headers(ACCEPT)
-    fun commits(
+    suspend fun commits(
         @Query("q") query: String,
         @Query("page") pageNumber: Int,
         @Query("sort") sort: String? = null,
         @Query("order") order: String? = null,
     )
             : CommitsResponse
+
+    companion object {
+        const val GITHUB_HOST = "https://api.github.com"
+    }
 }
 
