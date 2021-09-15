@@ -19,6 +19,7 @@ import com.bradthome.android.githubsearch.R
 import com.bradthome.android.githubsearch.core.GitResult
 import com.bradthome.android.githubsearch.models.*
 import com.bradthome.android.githubsearch.ui.theme.GithubSearchTheme
+import java.text.DecimalFormat
 
 @Composable
 fun <T : ResultsItem> PagerCompose(searchResults: SearchResults<T>, updatePage: (addPage: Int) -> Unit) {
@@ -43,7 +44,7 @@ fun <T : ResultsItem> PagerCompose(searchResults: SearchResults<T>, updatePage: 
                     }
                     append(" of ")
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("${value.totalPages}")
+                        append(DecimalFormat("###,###,###,###").format(value.totalPages))
                     }
                 }, modifier = createModifer())
                 Icon(painterResource(id = R.drawable.ic_baseline_chevron_right_24),

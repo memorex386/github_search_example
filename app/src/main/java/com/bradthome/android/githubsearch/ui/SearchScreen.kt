@@ -1,5 +1,6 @@
 package com.bradthome.android.githubsearch.ui
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import com.bradthome.android.githubsearch.viewmodel.GithubViewModel
 
 sealed class SearchScreen<R : ResultsItem>(
     val searchApis: SearchApis<R>,
+    @DrawableRes val iconRes: Int,
     @StringRes val titleRes: Int,
     val pathName: String,
     val navGraph: @Composable SearchScreen<R>.(NavController, R) -> Unit,
@@ -92,6 +94,7 @@ sealed class SearchScreen<R : ResultsItem>(
 object Repositories :
     SearchScreen<GithubRepo>(
         searchApis = SearchRepositories,
+        iconRes = R.drawable.ic_repo_icon,
         titleRes = R.string.repositories,
         pathName = Constants.REPOSITORIES,
         navGraph = { navController, state ->
@@ -100,6 +103,7 @@ object Repositories :
 
 object Users : SearchScreen<UserItem>(
     searchApis = SearchUsers,
+    iconRes = R.drawable.ic_baseline_person_24,
     titleRes = R.string.users,
     pathName = Constants.USERS,
     navGraph = { navController, state ->
@@ -109,6 +113,7 @@ object Users : SearchScreen<UserItem>(
 
 object Commits : SearchScreen<CommitItem>(
     searchApis = SearchCommits,
+    iconRes = R.drawable.github_commit,
     titleRes = R.string.commits,
     pathName = Constants.COMMITS,
     navGraph = { navController, state ->
@@ -117,6 +122,7 @@ object Commits : SearchScreen<CommitItem>(
 
 object Issues : SearchScreen<IssueItem>(
     searchApis = SearchIssues,
+    iconRes = R.drawable.ic_issues_icon,
     titleRes = R.string.issues,
     pathName = Constants.ISSUES,
     navGraph = { navController, state ->
