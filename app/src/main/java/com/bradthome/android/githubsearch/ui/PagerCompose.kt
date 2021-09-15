@@ -24,7 +24,8 @@ import java.text.DecimalFormat
 @Composable
 fun <T : ResultsItem> PagerCompose(searchResults: SearchResults<T>, updatePage: (addPage: Int) -> Unit) {
     val currentPage = searchResults.searchOptions.searchQuery.page
-    searchResults.state.onResult(success = {
+    searchResults.totalPages?.also {
+        val format = DecimalFormat("###,###,###,###")
         Column {
             Divider()
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -40,11 +41,11 @@ fun <T : ResultsItem> PagerCompose(searchResults: SearchResults<T>, updatePage: 
                     contentDescription = null)
                 Text(text = buildAnnotatedString {
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("${searchResults.searchOptions.searchQuery.page}")
+                        append(format.format(currentPage))
                     }
                     append(" of ")
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append(DecimalFormat("###,###,###,###").format(value.totalPages))
+                        append(format.format(searchResults.totalPages))
                     }
                 }, modifier = createModifer())
                 Icon(painterResource(id = R.drawable.ic_baseline_chevron_right_24),
@@ -57,18 +58,21 @@ fun <T : ResultsItem> PagerCompose(searchResults: SearchResults<T>, updatePage: 
                     contentDescription = null)
             }
         }
-    })
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun CommitsPreview() {
     GithubSearchTheme {
+        val result = GitResult.tryCatch {
+            RepositoriesResponse(totalCount = 450045)
+        }
         PagerCompose(
             SearchResults(SearchOptions(search = SearchRepositories,
-                searchQuery = SearchQuery(Query("memor"), page = 1)), state = GitResult.tryCatch {
-                RepositoriesResponse(totalCount = 450045)
-            }), {}
+                searchQuery = SearchQuery(Query("memor"), page = 1)),
+                state = result,
+                totalPages = result.successValue?.totalPages), {}
         )
     }
 }

@@ -13,26 +13,42 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
 
+typealias SearchResultsState<T> = ResultState<SearchResults<T>>
+
 class GithubViewModel<T : ResultsItem>(
     val githubRepository: GithubRepository,
     val searchApis: SearchApis<T>,
     private val ioContext: CoroutineContext = Dispatchers.IO,
 ) : ViewModel() {
-    private val _state = MutableStateFlow<ResultState<SearchResults<T>>>(ResultState.Empty())
+    private val _state = MutableStateFlow<SearchResultsState<T>>(ResultState.Empty())
     val state = _state.asStateFlow()
 
+    private val _fetch = MutableStateFlow(false)
+    val fetch = _fetch.asStateFlow()
+
     fun fetch(searchQuery: SearchQuery) {
-        _state.value = ResultState.Empty()
+        _fetch.value = true
         viewModelScope.launch(ioContext) {
-            _state.value = GitResult.Success(githubRepository.fetch(searchOptions = SearchOptions(search = searchApis,
-                searchQuery = searchQuery)))
+            val searchOptions = SearchOptions(
+                search = searchApis,
+                searchQuery = searchQuery
+            )
+            val result = githubRepository.fetch(searchOptions)
+            _state.value = GitResult.Success(
+                SearchResults(
+                    searchOptions = searchOptions,
+                    state = result,
+                    totalPages = result.successValue?.totalPages ?: _state.value.successValue?.totalPages
+                )
+            )
+            _fetch.value = false
         }
     }
 
     fun updatePage(page: Int) {
         val value = state.value.successValue ?: return
         val query = value.searchOptions.searchQuery
-        val results = value.state.successValue?.totalPages ?: return
+        val results = value.totalPages ?: return
         fetch(query.copy(page = 1.coerceAtLeast(min(results, page))))
     }
 

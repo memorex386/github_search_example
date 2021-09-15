@@ -1,6 +1,6 @@
 package com.bradthome.android.githubsearch.models
 
-import com.bradthome.android.githubsearch.core.GitResult
+import com.bradthome.android.githubsearch.core.ResultState
 import com.squareup.moshi.Json
 import java.lang.Math.ceil
 
@@ -32,5 +32,9 @@ interface ResultsItem {
     val htmlUrl: String?
 }
 
-data class SearchResults<T : ResultsItem>(val searchOptions: SearchOptions<T>, val state: GitResult<out Results<T>>)
+data class SearchResults<T : ResultsItem>(
+    val searchOptions: SearchOptions<T>,
+    val state: ResultState<out Results<T>>,
+    val totalPages: Int?,
+)
 

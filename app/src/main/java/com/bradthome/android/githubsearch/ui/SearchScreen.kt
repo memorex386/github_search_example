@@ -1,11 +1,11 @@
 package com.bradthome.android.githubsearch.ui
 
+import android.content.Intent
+import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
@@ -15,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -30,6 +32,7 @@ import com.bradthome.android.githubsearch.ui.screens.IssueItemCompose
 import com.bradthome.android.githubsearch.ui.screens.RepositoriesItemCompose
 import com.bradthome.android.githubsearch.ui.screens.UsersItemCompose
 import com.bradthome.android.githubsearch.viewmodel.GithubViewModel
+
 
 sealed class SearchScreen<R : ResultsItem>(
     val searchApis: SearchApis<R>,
@@ -52,31 +55,57 @@ sealed class SearchScreen<R : ResultsItem>(
                     } as T
                 }
             }, key = "${searchApis.title}NavStateViewModel")
-            Box(modifier = Modifier.fillMaxSize()) {
+            val loading = viewModel.fetch.collectAsState()
+            Column(modifier = Modifier.fillMaxSize()) {
+
+                @Composable
+                fun box(
+                    create: @Composable BoxScope.() -> Unit,
+                ) = Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)) {
+                    create()
+                }
+
+                @Composable
+                fun progress() = box() {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+
                 val state = viewModel.state.collectAsState()
                 state.value.onResult(empty = {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }, error = {
-                    Text(text = exception.message ?: "Broken Call", modifier = Modifier.align(Alignment.Center))
+                    progress()
                 }, success = {
                     val searchResults = value
-                    searchResults.state.onResult(success = {
-                        Column(modifier = Modifier.fillMaxSize()) {
+                    if (loading.value) {
+                        progress()
+                    } else
+                        searchResults.state.onResult(success = {
                             LazyColumn(Modifier
                                 .fillMaxWidth()
                                 .weight(1f)) {
                                 items(items = value.items.orEmpty()) {
-                                    navGraph(navController, it)
+                                    val context = LocalContext.current
+                                    Box(modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            val browserIntent =
+                                                Intent(Intent.ACTION_VIEW, Uri.parse(it.htmlUrl ?: return@clickable))
+                                            startActivity(context, browserIntent, null)
+                                        }) {
+                                        navGraph(navController, it)
+                                    }
                                 }
                             }
-                            PagerCompose(searchResults = searchResults, viewModel::updatePage)
-                        }
-                    }, error = {
-                        Button(onClick = { viewModel.fetch(value.searchOptions.searchQuery) }) {
-                            Text(text = "Retry")
-                        }
-                    })
-
+                        }, error = {
+                            box() {
+                                Button(onClick = { viewModel.fetch(value.searchOptions.searchQuery) },
+                                    modifier = Modifier.align(Alignment.Center)) {
+                                    Text(text = "Retry")
+                                }
+                            }
+                        })
+                    PagerCompose(searchResults = searchResults, viewModel::updatePage)
                 })
             }
         }

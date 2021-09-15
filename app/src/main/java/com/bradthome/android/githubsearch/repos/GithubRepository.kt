@@ -4,7 +4,6 @@ import com.bradthome.android.githubsearch.core.GitResult
 import com.bradthome.android.githubsearch.models.Results
 import com.bradthome.android.githubsearch.models.ResultsItem
 import com.bradthome.android.githubsearch.models.SearchOptions
-import com.bradthome.android.githubsearch.models.SearchResults
 import com.bradthome.android.githubsearch.network.GithubApi
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.sync.Mutex
@@ -35,17 +34,15 @@ class GithubRepository(
         }
     }
 
-    suspend fun <T : ResultsItem> fetch(searchOptions: SearchOptions<T>): SearchResults<T> {
+    suspend fun <T : ResultsItem> fetch(searchOptions: SearchOptions<T>): GitResult<out Results<T>> {
         return withContext(context = coroutineContext) {
             searchOptions.run {
-                SearchResults(searchOptions = searchOptions, state = GitResult.tryCatchSuspend {
+                GitResult.tryCatchSuspend {
                     getCache(searchOptions = searchOptions) ?: networkCall(api).also {
                         saveCache(searchOptions, it)
                     }
-                })
-
+                }
             }
         }
     }
-
 }
