@@ -8,14 +8,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -31,6 +35,7 @@ import com.bradthome.android.githubsearch.ui.screens.CommitItemCompose
 import com.bradthome.android.githubsearch.ui.screens.IssueItemCompose
 import com.bradthome.android.githubsearch.ui.screens.RepositoriesItemCompose
 import com.bradthome.android.githubsearch.ui.screens.UsersItemCompose
+import com.bradthome.android.githubsearch.ui.theme.GithubSearchTheme
 import com.bradthome.android.githubsearch.viewmodel.GithubViewModel
 
 
@@ -50,13 +55,13 @@ sealed class SearchScreen<R : ResultsItem>(
             val viewModel: GithubViewModel<R> = viewModel(factory = object : ViewModelProvider.Factory {
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                     return GithubViewModel(githubRepository = githubRepository,
-                        searchApis = searchApis).also {
-                        it.fetch(SearchQuery(Query("a")))
-                    } as T
+                        searchApis = searchApis) as T
                 }
             }, key = "${searchApis.title}NavStateViewModel")
             val loading = viewModel.fetch.collectAsState()
             Column(modifier = Modifier.fillMaxSize()) {
+
+                TopBar(viewModel = viewModel)
 
                 @Composable
                 fun box(
@@ -74,7 +79,10 @@ sealed class SearchScreen<R : ResultsItem>(
 
                 val state = viewModel.state.collectAsState()
                 state.value.onResult(empty = {
-                    progress()
+                    box() {
+                        Text(text = "Input a search query for ${searchApis.title}!",
+                            modifier = Modifier.align(Alignment.Center))
+                    }
                 }, success = {
                     val searchResults = value
                     if (loading.value) {
@@ -120,6 +128,23 @@ sealed class SearchScreen<R : ResultsItem>(
 }
 
 
+@Composable
+fun TopBar(viewModel: GithubViewModel<*>) {
+    var field by remember { mutableStateOf(viewModel.state.value.successValue?.searchOptions?.searchQuery?.query?.text.orEmpty()) }
+    GithubSearchTheme {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)) {
+            OutlinedTextField(value = field,
+                label = { Text(text = "Search") },
+                onValueChange = { field = it },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = { viewModel.updateQuery(field) }),
+                modifier = Modifier.fillMaxWidth())
+        }
+    }
+}
+
 object Repositories :
     SearchScreen<GithubRepo>(
         searchApis = SearchRepositories,
@@ -157,4 +182,3 @@ object Issues : SearchScreen<IssueItem>(
     navGraph = { navController, state ->
         IssueItemCompose(state)
     })
-

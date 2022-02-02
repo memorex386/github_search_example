@@ -45,11 +45,17 @@ class GithubViewModel<T : ResultsItem>(
         }
     }
 
+
     fun updatePage(page: Int) {
         val value = state.value.successValue ?: return
         val query = value.searchOptions.searchQuery
         val results = value.totalPages ?: return
         fetch(query.copy(page = 1.coerceAtLeast(min(results, page))))
+    }
+
+    fun updateQuery(query: String) {
+        val searchQuery = state.value.successValue?.searchOptions?.searchQuery ?: SearchQuery(Query(query))
+        fetch(searchQuery.copy(query = Query(query), page = 1))
     }
 
 }
