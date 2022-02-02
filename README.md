@@ -1,4 +1,4 @@
-# github_search_example
+# Github Search using Jetpack Compose (Android)
 
 A sample Android app written in Kotlin using Jetpack Compose.
 
